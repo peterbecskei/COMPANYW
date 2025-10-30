@@ -11,10 +11,10 @@ SITEMAP_LIST = "SITEMAP_LIST.csv"
 URL_LIST = "URL_LIST.csv"
 FILTERED_URL_LIST = "FILTERED_URL_LIST.csv"
 PROXI_LIST = "PROXI_LIST.csv"
-PROXI_COUNT = 50
+PROXI_COUNT = 10
 DATAFOLDER = os.path.join(cwd, "Companies")
-PROXED = True
-
+#PROXED = True
+PROXED = False
 # Ensure DATAFOLDER exists
 os.makedirs(DATAFOLDER, exist_ok=True)
 
@@ -56,6 +56,7 @@ def fetch(url, use_proxy=False, timeout=10):
             proxy = get_next_proxy()
             if proxy:
                 response = requests.get(url, headers=headers, proxies=proxy, timeout=timeout)
+                print(proxy)
             else:
                 response = requests.get(url, headers=headers, timeout=timeout)
         else:
