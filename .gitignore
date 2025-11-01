@@ -1,0 +1,9 @@
+.venv
+Companies
+__pycache__/
+*.pyc
+.DS_Store
+.idea
+*.zip
+*.csv
+.idea
