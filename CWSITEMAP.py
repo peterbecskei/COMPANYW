@@ -11,10 +11,10 @@ SITEMAP_LIST = "SITEMAP_LIST.csv"
 URL_LIST = "URL_LIST.csv"
 FILTERED_URL_LIST = "FILTERED_URL_LIST.csv"
 PROXI_LIST = "PROXI_LIST.csv"
-PROXI_COUNT = 10
+PROXI_COUNT = 40
 DATAFOLDER = os.path.join(cwd, "Companies")
-#PROXED = True
-PROXED = False
+PROXED = True
+#PROXED = False
 # Ensure DATAFOLDER exists
 os.makedirs(DATAFOLDER, exist_ok=True)
 
@@ -49,14 +49,35 @@ def reset_proxy_counter():
 # === FETCH FUNCTIONS ===
 def fetch(url, use_proxy=False, timeout=10):
     headers = {
+        'Accept-Encoding': 'gzip',
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     }
+    #print(proxy)
     try:
         if use_proxy and PROXED:
             proxy = get_next_proxy()
+            print(proxy)
+            print(url)
             if proxy:
-                response = requests.get(url, headers=headers, proxies=proxy, timeout=timeout)
-                print(proxy)
+
+                response = requests.get(url, headers=headers, proxies=proxy, timeout=timeout, stream=True)
+                #print(len(response.content))
+                # --- 1️⃣ Check if compressed ---
+                #encoding = response.headers.get("Content-Encoding")
+                #if encoding:
+                #    print(f"Response is compressed with: {encoding}")
+                #else:
+                #    print("Response is not compressed.")
+
+                # --- 2️⃣ Measure compressed size ---
+                # The 'raw' stream contains the compressed data
+                raw_bytes = response.raw.read()
+                compressed_size = len(raw_bytes)
+                print(f"Compressed size: {compressed_size} bytes")
+
+                #print(response.headers['Content-length'])
+                #print(response.headers)
+                #print(len(response.content))
             else:
                 response = requests.get(url, headers=headers, timeout=timeout)
         else:
@@ -105,7 +126,7 @@ def level_1():
             print("  Proxy rotation reset.")
 
     # Save to URL_LIST.csv
-    with open(URL_LIST, "w", encoding="utf-8", newline="") as f:
+    with open(URL_LIST, "a", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         for url in url_list:
             writer.writerow([url])
@@ -124,15 +145,15 @@ def level_2():
 
     print(f"Level 2: Filtering {len(urls)} URLs...")
 
-    pattern_include = re.compile(r'-kft|-bt', re.IGNORECASE)
-    pattern_exclude = re.compile(r'-v-a|-f-a', re.IGNORECASE)
-
+    pattern_include = re.compile(r'-kft|-bt|-zrt', re.IGNORECASE)
+    #pattern_exclude = re.compile(r'-v-a|-f-a', re.IGNORECASE)
+    pattern_exclude = re.compile(r'-xxxxxxxxxxxv-a', re.IGNORECASE)
     for url in urls:
         if pattern_include.search(url) and not pattern_exclude.search(url):
             filtered.append(url)
 
     # Save to FILTERED_URL_LIST.csv
-    with open(FILTERED_URL_LIST, "w", encoding="utf-8", newline="") as f:
+    with open(FILTERED_URL_LIST, "a", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         for url in filtered:
             writer.writerow([url])
@@ -183,7 +204,7 @@ if __name__ == "__main__":
 
     # Run levels one by one (can be commented out individually)
     level_1()
-    level_2()
-    level_3()
+    #level_2()
+    #level_3()
 
     print("\nAll levels completed.")
