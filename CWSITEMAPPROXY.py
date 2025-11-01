@@ -137,7 +137,7 @@ def level_1():
         url_list.extend(locs)
         print(f"    Found {len(locs)} URLs in sitemap.")
         print(locs)
-        print(url_list)
+        #print(url_list)
         # Reset proxy counter every PROXI_COUNT requests
         #if PROXED and proxy_usage >= PROXI_COUNT:
         #    reset_proxy_counter()
