@@ -222,7 +222,7 @@ if __name__ == "__main__":
 
     # Run levels one by one (can be commented out individually)
     #level_1()
-    level_2()
-    #level_3()
+    #level_2()
+    level_3()
 
     print("\nAll levels completed.")
