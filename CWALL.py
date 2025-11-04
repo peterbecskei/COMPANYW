@@ -23,9 +23,8 @@ URL_LIST = "URL_LIST" + str(N) + ".csv"
 #PROXY = "36fda789ac44aa4cc19e:b966e984e5922790@gw.dataimpulse.com:10012"
 #PROXY = "159.112.235.141:80"
 PROXY = "195.56.65.172:8081"
-#PROXY =""
 DATAFOLDER = os.path.join(cwd, "Companies_" + str(N))
-
+NOPROXY = True
 # Logging setup
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
 
@@ -98,10 +97,10 @@ def fetch_url(url):
     Returns tuple (status_code, response_bytes, response_headers)
     or raises requests.RequestException
     """
-    print(PROXIES)
+    print(PROXY)
+    if NOPROXY:  resp = requests.get(url, headers=HEADERS,  timeout=REQUEST_TIMEOUT)
+    else:  resp = requests.get(url, headers=HEADERS, proxies=PROXIES, timeout=REQUEST_TIMEOUT)
 
-    resp = requests.get(url, headers=HEADERS, proxies=PROXIES, timeout=REQUEST_TIMEOUT)
-    #resp = requests.get(url, headers=HEADERS,  timeout=REQUEST_TIMEOUT)
     resp.raise_for_status()
     return resp.status_code, resp.content, resp.headers
 
