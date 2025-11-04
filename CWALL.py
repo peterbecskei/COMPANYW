@@ -32,6 +32,7 @@ print(f"Input file: {URL_LIST}")
 PROXY = "195.56.65.172:8081"
 DATAFOLDER = os.path.join(cwd, "Companies_" + str(N))
 NOPROXY = True
+SIZELIMIT = 30*1024  # bytes (gzip-compressed)
 # Logging setup
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
 
@@ -149,7 +150,7 @@ def save_html(folder, filename, html_bytes):
     return path
 
 
-def main():
+def fetch_content():
     csv_path = os.path.join(cwd, URL_LIST)
     if not check_csv_exists(csv_path):
         sys.exit(1)
@@ -184,7 +185,7 @@ def main():
         # Check compressed size (gzip)
         size_gz = compressed_size(content)
         logging.info("Gzip-compressed size: %d bytes", size_gz)
-        if size_gz > 1024*30:
+        if size_gz > SIZELIMIT:
             logging.error("Compressed size < 50000: stopping. Fetch error")
             logging.error("Fetch error")
             sys.exit(1)
@@ -220,4 +221,47 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    """Main function with separate level execution"""
+    print("🚀 CWALL - Web Scraping Tool")
+    print("=" * 50)
+
+    while True:
+        print("\nSelect operation:")
+        print("1. Level 1 - GET Site Map")
+        print("2. Filter URLs from Site Map")
+        print("3. Level 2 - Fetch Content for Filtered URLs")
+        print("4. Order URLs content to NAME FOLDER")
+        print("5. Exit")
+
+        choice = input("\nEnter choice (1-5): ").strip()
+
+        if choice == '1':
+            print("\n🎯 Running Level 1 -GET Site Map ")
+            #filter_urls()
+
+        elif choice == '2':
+            print("\n🎯 Running URL Filtering...")
+            #if os.path.exists(FILTERED_URL_LIST):
+
+            #    fetch_content()
+            #else:
+                #print("❌ Run Level 1 first to create filtered URL list!")
+
+        elif choice == '3':
+            print("\n🎯 Level 2 - Content Fetching...")
+            fetch_content()
+            #filter_urls()
+            #if os.path.exists(FILTERED_URL_LIST):
+             #   f = 1
+                # fetch_content()
+        elif choice == '4':
+            print("\n🎯 Order URLs content to NAME FOLDER...")
+
+        elif choice == '5':
+            print("👋 Exiting...")
+            break
+
+        else:
+            print("❌ Invalid choice!")
+
+
