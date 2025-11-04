@@ -17,9 +17,16 @@ import requests
 import sys
 
 # === CONSTANTS ===
+try:
+   # print(sys.argv)
+    N =sys.argv[1]
+except: N = 0
+
+
 cwd = os.getcwd()
-N = 0
+#N = 0
 URL_LIST = "URL_LIST" + str(N) + ".csv"
+print(f"Input file: {URL_LIST}")
 #PROXY = "36fda789ac44aa4cc19e:b966e984e5922790@gw.dataimpulse.com:10012"
 #PROXY = "159.112.235.141:80"
 PROXY = "195.56.65.172:8081"
@@ -97,9 +104,13 @@ def fetch_url(url):
     Returns tuple (status_code, response_bytes, response_headers)
     or raises requests.RequestException
     """
-    print(PROXY)
-    if NOPROXY:  resp = requests.get(url, headers=HEADERS,  timeout=REQUEST_TIMEOUT)
-    else:  resp = requests.get(url, headers=HEADERS, proxies=PROXIES, timeout=REQUEST_TIMEOUT)
+
+    if NOPROXY:
+        print("NO PROXY")
+        resp = requests.get(url, headers=HEADERS,  timeout=REQUEST_TIMEOUT)
+    else:
+        print(PROXY)
+        resp = requests.get(url, headers=HEADERS, proxies=PROXIES, timeout=REQUEST_TIMEOUT)
 
     resp.raise_for_status()
     return resp.status_code, resp.content, resp.headers
@@ -157,7 +168,7 @@ def main():
         filename = parse_filename_from_url(url)
         file_path = os.path.join(DATAFOLDER, filename)
 
-        # modify happend next line:
+
         if os.path.isfile(file_path):
             logging.info("File already exists, skipping fetch: %s", file_path)
             continue
